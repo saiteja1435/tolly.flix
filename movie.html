@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - TollyFlix</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:16px;">
+                <img src="logo.png" alt="TollyFlix Logo" class="header-logo-img">
+                <h1 style="margin:0;">🎬 TollyFlix</h1>
+            </a>
+        </div>
+        <p class="tagline">Discover Telugu Movies, Ratings, Trailers & More</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+            <button onclick="history.back()">⬅️ Back</button>
+            <button id="shareMovieBtn">📤 Share</button>
+            <button id="wlMovieBtn">🕐 Watch Later</button>
+        </div>
+    </header>
+    <div id="toast" class="toast"></div>
+
+    <div id="loader" class="loader"></div>
+    <div id="movieDetails"></div>
+    <div id="watchProvidersContainer"></div>
+    <div id="trailerContainer"></div>
+    <div id="castContainer"></div>
+    <div id="similarMovies"></div>
+
+    <script src="movie.js"></script>
+</body>
+</html>

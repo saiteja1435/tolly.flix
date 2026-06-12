@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TollyFlix - Telugu Movies</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc143c">
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <img src="logo.png" alt="TollyFlix Logo" class="header-logo-img">
+            <h1>🎬 TollyFlix</h1>
+            <div class="header-right">
+                <div id="userInfo"></div>
+                <button id="themeBtn">🌙 Dark Mode</button>
+                <button id="loginBtn" onclick="window.location.href='login.html'">👤 Login</button>
+                <button id="logoutBtn" style="display:none;">🚪 Logout</button>
+            </div>
+        </div>
+        <p class="tagline">Discover Telugu Movies, Ratings, Trailers & More</p>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 Search movies & series...">
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <div class="type-tabs">
+            <button class="type-tab active" id="moviesTab">🎬 Movies</button>
+            <button class="type-tab" id="seriesTab">📺 Web Series</button>
+        </div>
+
+        <div class="controls">
+            <select id="genreFilter">
+                <option value="all">🎭 All Genres</option>
+                <option value="28">💥 Action</option>
+                <option value="35">😂 Comedy</option>
+                <option value="18">🎭 Drama</option>
+                <option value="10749">❤️ Romance</option>
+                <option value="53">🔪 Thriller</option>
+                <option value="27">👻 Horror</option>
+                <option value="12">🌍 Adventure</option>
+                <option value="878">🚀 Sci-Fi</option>
+            </select>
+            <select id="langFilter">
+                <option value="te">🇮🇳 Telugu</option>
+                <option value="hi">🇮🇳 Hindi</option>
+                <option value="ta">🇮🇳 Tamil</option>
+                <option value="ml">🇮🇳 Malayalam</option>
+                <option value="kn">🇮🇳 Kannada</option>
+            </select>
+            <select id="yearFilter">
+                <option value="">📅 All Years</option>
+            </select>
+            <select id="ratingFilter">
+                <option value="">⭐ Any Rating</option>
+                <option value="9">9+ ⭐</option>
+                <option value="8">8+ ⭐</option>
+                <option value="7">7+ ⭐</option>
+                <option value="6">6+ ⭐</option>
+            </select>
+            <select id="sortFilter">
+                <option value="popularity.desc">🔥 Popularity</option>
+                <option value="vote_average.desc">⭐ Rating</option>
+                <option value="release_date.desc">🆕 Newest</option>
+                <option value="revenue.desc">💰 Box Office</option>
+            </select>
+        </div>
+
+        <div class="action-btns">
+            <button id="trendingBtn">🔥 Trending</button>
+            <button id="topRatedBtn">⭐ Top Rated</button>
+            <button id="newReleasesBtn">🆕 New Releases</button>
+            <button id="upcomingBtn">🔔 Upcoming</button>
+            <button id="historyBtn">📜 History</button>
+            <button id="suggestBtn">🎲 Surprise Me!</button>
+            <button id="watchLaterBtn">🕐 Watch Later</button>
+            <button id="favoritesBtn">❤️ Favorites</button>
+        </div>
+    </header>
+
+    <div id="sectionLabel" class="section-label">🎬 Telugu Movies</div>
+    <div id="loader" class="loader"></div>
+    <div id="moviesContainer" class="movie-grid"></div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

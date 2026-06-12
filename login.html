@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TollyFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            min-height: 100vh;
+            padding: 0;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated cinematic background */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(220, 20, 60, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(220, 20, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(139, 0, 0, 0.12) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgPulse 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            from { opacity: 0.7; }
+            to   { opacity: 1; }
+        }
+
+        /* Floating film strip decorations */
+        .film-strip {
+            position: fixed;
+            width: 60px;
+            opacity: 0.04;
+            z-index: 0;
+        }
+        .film-strip-left  { left: 0; top: 0; height: 100vh; border-right: 3px solid white; }
+        .film-strip-right { right: 0; top: 0; height: 100vh; border-left: 3px solid white; }
+        .film-hole {
+            width: 20px; height: 14px;
+            border: 2px solid white;
+            border-radius: 3px;
+            margin: 10px auto;
+        }
+
+        /* Logo */
+        .login-logo {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-logo h1 {
+            font-size: 2.4rem;
+            color: #ff4d4d;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(255, 77, 77, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 77, 77, 0.4); }
+            to   { text-shadow: 0 0 40px rgba(255, 77, 77, 0.8), 0 0 80px rgba(255, 77, 77, 0.3); }
+        }
+
+        .login-logo p {
+            color: #888;
+            font-size: 13px;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* Card */
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+            width: 90%;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 35px 30px;
+            border: 1px solid rgba(255, 77, 77, 0.15);
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255,255,255,0.03),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 28px;
+            background: #0d0d0d;
+            border-radius: 10px;
+            padding: 4px;
+            border: none;
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #666;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.25s;
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .auth-tab.active {
+            background: crimson;
+            color: white;
+            border-bottom-color: transparent;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+        }
+
+        /* Form */
+        .auth-form h2 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .auth-sub {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .input-group { margin-bottom: 16px; }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0d0d0d;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: crimson;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.15);
+        }
+
+        .pass-wrap { position: relative; }
+        .pass-wrap input { padding-right: 42px; }
+
+        .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            background: none;
+            border: none;
+            color: #555;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .eye-btn:hover {
+            background: none;
+            color: crimson;
+            transform: translateY(-50%) scale(1.1);
+            opacity: 1;
+        }
+
+        .auth-error {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-bottom: 10px;
+            min-height: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .auth-submit {
+            width: 100%;
+            padding: 13px;
+            font-size: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, crimson, #a00020);
+            border-radius: 10px;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+            box-shadow: 0 5px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .auth-submit:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.5);
+        }
+
+        .auth-submit:active { transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #2a2a2a;
+        }
+
+        /* Google button */
+        .google-btn {
+            width: 100%;
+            padding: 11px;
+            font-size: 14px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .google-btn:hover {
+            background: #222;
+            border-color: #444;
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .auth-switch span {
+            color: crimson;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .auth-switch span:hover { text-decoration: underline; }
+
+        .hidden { display: none !important; }
+
+        /* Back link */
+        .back-link {
+            position: relative;
+            z-index: 1;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .back-link a:hover { color: #ff4d4d; }
+
+        /* Light theme overrides */
+        body.light { background: #f5f5f5; }
+        body.light .bg-overlay { opacity: 0.3; }
+        body.light .auth-container {
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(220,20,60,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        body.light .auth-form h2 { color: #111; }
+        body.light .input-group input { background: #f5f5f5; color: #111; border-color: #ddd; }
+        body.light .auth-tabs { background: #eee; }
+        body.light .google-btn { background: #f0f0f0; color: #111; border-color: #ddd; }
+        body.light .auth-switch { color: #777; }
+        body.light .back-link a { color: #999; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+
+    <!-- Film strip decorations -->
+    <div class="film-strip film-strip-left">
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    </div>
+    <div class="film-strip film-strip-right">
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+        <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    </div>
+
+    <!-- Logo -->
+    <div class="login-logo">
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;">
+            <img src="logo.png" alt="TollyFlix" class="header-logo-img" style="height:64px;width:64px;border-radius:12px;">
+            <h1 style="font-size:2.4rem;color:#ff4d4d;letter-spacing:2px;margin:0;animation:glow 2s ease-in-out infinite alternate;">🎬 TollyFlix</h1>
+        </div>
+        <p style="color:#888;font-size:13px;margin:8px 0 0;letter-spacing:1px;">YOUR WORLD OF CINEMA</p>
+    </div>
+
+    <!-- Auth Card -->
+    <div class="auth-container">
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+            <button class="auth-tab" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+            <h2>Welcome Back 👋</h2>
+            <p class="auth-sub">Login to access your Favorites & Watch Later</p>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="you@example.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="pass-wrap">
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    <span class="eye-btn" onclick="togglePass('loginPassword')">👁️</span>
+                </div>
+            </div>
+
+            <div id="loginError" class="auth-error"></div>
+
+            <button type="submit" class="auth-submit">🚀 Login</button>
+
+            <p class="auth-switch">Don't have an account? <span onclick="switchTab('signup')">Sign Up</span></p>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)">
+            <h2>Create Account 🎬</h2>
+            <p class="auth-sub">Join TollyFlix to save your movies</p>
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" placeholder="Your name" required>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" placeholder="you@example.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="pass-wrap">
+                    <input type="password" id="signupPassword" placeholder="Min 6 characters" required minlength="6">
+                    <span class="eye-btn" onclick="togglePass('signupPassword')">👁️</span>
+                </div>
+            </div>
+
+            <div id="signupError" class="auth-error"></div>
+
+            <button type="submit" class="auth-submit">🎉 Create Account</button>
+
+            <p class="auth-switch">Already have an account? <span onclick="switchTab('login')">Login</span></p>
+        </form>
+
+    </div>
+
+    <div class="back-link">
+        <a href="index.html">← Back to TollyFlix</a>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function switchTab(tab) {
+            document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
+            document.getElementById("signupForm").classList.toggle("hidden", tab !== "signup");
+            document.getElementById("loginTab").classList.toggle("active", tab === "login");
+            document.getElementById("signupTab").classList.toggle("active", tab === "signup");
+        }
+
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+            const users = JSON.parse(localStorage.getItem("tf_users")) || [];
+            const hashed = await hashPassword(password);
+            const user = users.find(u => u.email === email && (u.password === hashed || u.password === password));
+            if (!user) {
+                document.getElementById("loginError").textContent = "❌ Invalid email or password.";
+                return;
+            }
+            if (user.password === password) {
+                user.password = hashed;
+                localStorage.setItem("tf_users", JSON.stringify(users));
+            }
+            localStorage.setItem("tf_loggedIn", JSON.stringify({ name: user.name, email: user.email }));
+            showToast(`✅ Welcome back, ${user.name}!`);
+            setTimeout(() => window.location.href = "index.html", 1500);
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById("signupName").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value;
+            const hashed = await hashPassword(password);
+            let users = JSON.parse(localStorage.getItem("tf_users")) || [];
+            if (users.find(u => u.email === email)) {
+                document.getElementById("signupError").textContent = "❌ Email already registered.";
+                return;
+            }
+            users.push({ name, email, password: hashed });
+            localStorage.setItem("tf_users", JSON.stringify(users));
+            localStorage.setItem("tf_loggedIn", JSON.stringify({ name, email }));
+            showToast(`✅ Welcome, ${name}!`);
+            setTimeout(() => window.location.href = "index.html", 1500);
+        }
+
+        if (localStorage.getItem("tf_loggedIn")) window.location.href = "index.html";
+        if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
+    </script>
+
+</body>
+</html>

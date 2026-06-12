@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - TollyFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-hero {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .profile-card {
+            background: #1e1e1e;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: crimson;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+        .profile-info h2 { font-size: 1.5rem; margin-bottom: 4px; }
+        .profile-info p { color: #aaa; font-size: 14px; }
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 10px 18px;
+            text-align: center;
+            min-width: 90px;
+        }
+        .stat-box .num { font-size: 1.4rem; font-weight: bold; color: crimson; }
+        .stat-box .lbl { font-size: 12px; color: #aaa; margin-top: 2px; }
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .profile-tab {
+            padding: 9px 20px;
+            border-radius: 20px;
+            background: #1e1e1e;
+            color: #aaa;
+            border: 2px solid #333;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .profile-tab.active, .profile-tab:hover {
+            background: crimson;
+            color: white;
+            border-color: crimson;
+        }
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 14px;
+        }
+        .mini-card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .mini-card:hover { transform: translateY(-4px); }
+        .mini-card img { width: 100%; height: 190px; object-fit: cover; display: block; }
+        .mini-card .mini-title {
+            font-size: 12px;
+            padding: 6px 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .mini-card .mini-remove {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(0,0,0,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 13px;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .mini-card .mini-remove:hover { background: crimson; }
+        .ratings-list { display: flex; flex-direction: column; gap: 12px; }
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .rating-row:hover { background: #2a2a2a; }
+        .rating-row img { width: 45px; height: 65px; object-fit: cover; border-radius: 6px; }
+        .rating-row .r-info { flex: 1; }
+        .rating-row .r-info h4 { font-size: 14px; margin-bottom: 3px; }
+        .rating-row .r-stars { color: gold; font-size: 16px; letter-spacing: 2px; }
+        .empty-msg { color: #aaa; text-align: center; padding: 40px 20px; font-size: 15px; }
+        .danger-btn {
+            background: #2a2a2a;
+            color: #ff4d4d;
+            border: 1px solid #ff4d4d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+        .danger-btn:hover { background: #ff4d4d; color: white; }
+        body.light .profile-card, body.light .mini-card, body.light .stat-box, body.light .rating-row { background: #fff; }
+        body.light .stat-box { background: #f0f0f0; }
+        body.light .profile-tab { background: #fff; color: #555; border-color: #ddd; }
+        body.light .mini-title { color: #111; }
+        body.light .profile-info h2 { color: #111; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:16px;">
+                <img src="logo.png" alt="TollyFlix Logo" class="header-logo-img">
+                <h1 style="margin:0;">🎬 TollyFlix</h1>
+            </a>
+        </div>
+        <p class="tagline">Discover Telugu Movies, Ratings, Trailers & More</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+            <button onclick="history.back()">⬅️ Back</button>
+            <button id="logoutBtn">🚪 Logout</button>
+        </div>
+    </header>
+
+    <div id="toast" class="toast"></div>
+
+    <div class="profile-hero">
+        <div class="profile-card" id="profileCard"></div>
+
+        <div class="profile-tabs">
+            <button class="profile-tab active" onclick="showTab('favorites', this)">❤️ Favorites</button>
+            <button class="profile-tab" onclick="showTab('watchlater', this)">🕐 Watch Later</button>
+            <button class="profile-tab" onclick="showTab('ratings', this)">⭐ My Ratings</button>
+            <button class="profile-tab" onclick="showTab('settings', this)">⚙️ Settings</button>
+        </div>
+
+        <div id="tabContent"></div>
+    </div>
+
+    <script>
+        if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
+
+        const loggedIn = JSON.parse(localStorage.getItem("tf_loggedIn"));
+        if (!loggedIn) window.location.href = "login.html";
+
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.textContent = msg;
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 3000);
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem("tf_loggedIn");
+            window.location.href = "index.html";
+        });
+
+        // Build profile header
+        const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+        const wl = JSON.parse(localStorage.getItem("watchLater")) || [];
+        const ratings = JSON.parse(localStorage.getItem("tf_ratings")) || {};
+        const ratingCount = Object.keys(ratings).length;
+
+        document.getElementById("profileCard").innerHTML = `
+            <div class="profile-avatar">${loggedIn.name[0].toUpperCase()}</div>
+            <div class="profile-info">
+                <h2>${loggedIn.name}</h2>
+                <p>${loggedIn.email}</p>
+                <div class="stats-row">
+                    <div class="stat-box"><div class="num">${favs.length}</div><div class="lbl">Favorites</div></div>
+                    <div class="stat-box"><div class="num">${wl.length}</div><div class="lbl">Watch Later</div></div>
+                    <div class="stat-box"><div class="num">${ratingCount}</div><div class="lbl">Rated</div></div>
+                </div>
+            </div>
+        `;
+
+        function showTab(tab, btn) {
+            document.querySelectorAll(".profile-tab").forEach(t => t.classList.remove("active"));
+            btn.classList.add("active");
+            const content = document.getElementById("tabContent");
+
+            if (tab === "favorites") renderMiniGrid(favs, "favorites", content);
+            else if (tab === "watchlater") renderMiniGrid(wl, "watchLater", content);
+            else if (tab === "ratings") renderRatings(content);
+            else if (tab === "settings") renderSettings(content);
+        }
+
+        function renderMiniGrid(items, storageKey, container) {
+            if (!items.length) { container.innerHTML = `<p class="empty-msg">Nothing here yet!</p>`; return; }
+            let html = `<div class="mini-grid">`;
+            items.forEach(m => {
+                const title = m.title || m.name || "";
+                const isTV = m._type === "tv";
+                const page = isTV ? `series.html?id=${m.id}` : `movie.html?id=${m.id}`;
+                const poster = m.poster_path ? `https://image.tmdb.org/t/p/w300${m.poster_path}` : "https://via.placeholder.com/130x190?text=No+Image";
+                html += `<div class="mini-card" data-id="${m.id}" data-key="${storageKey}">
+                    <img src="${poster}" alt="${title}" onclick="window.location.href='${page}'" loading="lazy">
+                    <button class="mini-remove" title="Remove">✕</button>
+                    <div class="mini-title">${title}</div>
+                </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+
+            container.querySelectorAll(".mini-remove").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(btn.closest(".mini-card").dataset.id);
+                    const key = btn.closest(".mini-card").dataset.key;
+                    let list = JSON.parse(localStorage.getItem(key)) || [];
+                    list = list.filter(x => x.id !== id);
+                    localStorage.setItem(key, JSON.stringify(list));
+                    btn.closest(".mini-card").remove();
+                    // Update stat
+                    showToast("Removed!");
+                });
+            });
+        }
+
+        async function renderRatings(container) {
+            const ratings = JSON.parse(localStorage.getItem("tf_ratings")) || {};
+            const ids = Object.keys(ratings);
+            if (!ids.length) { container.innerHTML = `<p class="empty-msg">You haven't rated anything yet!</p>`; return; }
+
+            container.innerHTML = `<div class="ratings-list" id="ratingsList"><p style="color:#aaa;text-align:center;padding:20px;">Loading...</p></div>`;
+
+            const results = await Promise.allSettled(ids.map(id =>
+                fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=414fa9cd1d5abe3a521d0c8b4d8d9d2a`).then(r => r.json())
+            ));
+
+            let html = "";
+            results.forEach((res, i) => {
+                if (res.status !== "fulfilled" || !res.value.title) return;
+                const m = res.value;
+                const userRating = ratings[m.id];
+                const stars = "★".repeat(userRating) + "☆".repeat(5 - userRating);
+                const poster = m.poster_path ? `https://image.tmdb.org/t/p/w92${m.poster_path}` : "";
+                html += `<div class="rating-row" onclick="window.location.href='movie.html?id=${m.id}'">
+                    ${poster ? `<img src="${poster}" alt="${m.title}">` : ""}
+                    <div class="r-info">
+                        <h4>${m.title}</h4>
+                        <div class="r-stars">${stars}</div>
+                        <small style="color:#aaa">${userRating}/5 stars</small>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById("ratingsList").innerHTML = html || `<p class="empty-msg">Couldn't load rated movies.</p>`;
+        }
+
+        function renderSettings(container) {
+            container.innerHTML = `
+                <div style="max-width:400px;">
+                    <p style="color:#aaa;margin-bottom:20px;font-size:14px;">Manage your TollyFlix data</p>
+                    <button class="danger-btn" onclick="clearData('favorites')">🗑️ Clear All Favorites</button><br>
+                    <button class="danger-btn" onclick="clearData('watchLater')">🗑️ Clear Watch Later</button><br>
+                    <button class="danger-btn" onclick="clearData('tf_ratings')">🗑️ Clear All Ratings</button><br>
+                    <button class="danger-btn" style="border-color:#ff8c00;color:#ff8c00;" onclick="deleteAccount()">⚠️ Delete Account</button>
+                </div>`;
+        }
+
+        function clearData(key) {
+            if (!confirm("Are you sure?")) return;
+            localStorage.removeItem(key);
+            showToast("✅ Cleared!");
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        function deleteAccount() {
+            if (!confirm("Delete your account? This cannot be undone.")) return;
+            const email = loggedIn.email;
+            let users = JSON.parse(localStorage.getItem("tf_users")) || [];
+            users = users.filter(u => u.email !== email);
+            localStorage.setItem("tf_users", JSON.stringify(users));
+            localStorage.removeItem("tf_loggedIn");
+            window.location.href = "index.html";
+        }
+
+        // Show favorites tab by default
+        showTab("favorites", document.querySelector(".profile-tab"));
+    </script>
+</body>
+</html>
